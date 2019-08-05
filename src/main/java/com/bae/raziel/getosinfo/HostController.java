@@ -1,4 +1,4 @@
-package com.bae.raziel.clusters;
+package com.bae.raziel.getosinfo;
 
 import javax.validation.Valid;
 
@@ -8,22 +8,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bae.raziel.test.HostDTO;
-
-
 @RestController
-@RequestMapping("/api/cluster")
-public class ClusterController {
+@RequestMapping("/api/host")
+public class HostController {
+	
+
 	
 	@Autowired
-	private ClusterRepository clusterRepository;
+	private HostService hostSevice;
 	
-	
-	@PostMapping("/save")
-	public ClusterDTO createCluster(@Valid @RequestBody ClusterDTO cluster) {
-		return clusterRepository.save(cluster);
+	@PostMapping("/savehost")
+	public HostDTO createHost(@Valid @RequestBody HostDTO host) {
+		return hostSevice.save(host);
 	}
+
 	
-
-
 }
