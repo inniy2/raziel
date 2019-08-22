@@ -17,17 +17,29 @@ public class HostService {
 	
 	@Autowired
 	private HostRepository hostRepository;
-		
+	
+	@Autowired
+	private MySQLRepository mysqlRepository;
+	
 
-	public HostDTO save(HostDTO host) {
+	public HostDTO saveHost(HostDTO hostDTO) {
 		
-		logger.debug("save method");
+		logger.debug("save host method called");
 		
-		logger.debug(host.toString());
-		
-		return hostRepository.save(host);
+		return hostRepository.save(hostDTO);
 		
 	}
+	
+	
+	public MySQLDTO saveMySQL(MySQLDTO mysqlDTO) {
+		
+		logger.debug("save mysql method called");
+		
+		return mysqlRepository.save(mysqlDTO);
+		
+	}
+	
+	
 	
 	
 }
