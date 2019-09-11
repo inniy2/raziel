@@ -37,8 +37,8 @@ public class TargetMySQLRepository {
 			while(rs.next()){
 				MySQLDao result = new MySQLDao();
 				result.setHostName(mySQLDao.getHostName());
-                result.setTableSchema(rs.getString("table_schema"));
-                result.setTableName(rs.getString("table_name"));
+				result.setTableSchema(rs.getString("table_schema"));
+				result.setTableName(rs.getString("table_name"));
 				result.setTableLength(rs.getLong("data_length"));
 				MySQLDaoList.add(result);
 			}
