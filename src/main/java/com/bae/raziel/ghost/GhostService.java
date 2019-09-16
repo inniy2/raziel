@@ -10,7 +10,11 @@ import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.bae.raziel.admin.MySQLHostRepository;
+import com.bae.raziel.mysql.TargetMySQLRepository;
 
 @Service
 public class GhostService {
@@ -26,6 +30,8 @@ public class GhostService {
 	
 	@Autowired
 	GhostRepository ghostRepository;
+	
+	
 	
 	
 	String[] ghostRunComand = new String[] {
@@ -78,10 +84,13 @@ public class GhostService {
 	
 	
 	
-
 	
 	public GhostDto dryRun(GhostDto ghostDto){
 		
+		
+		/*
+		 * dryrun
+		 */
 		ghostDto.setOutputStrList(this.ghostRun(ghostDto, "--verbose"));
 		
 		return ghostDto;

@@ -11,6 +11,8 @@ public class MySQLDao {
 	private String tableName;
 	private long tableLength;
 	
+	private String readOnly;
+	
 	public String getHostName() {
 		return hostName;
 	}
@@ -53,6 +55,15 @@ public class MySQLDao {
 	}
 	public void setTableLength(long tableLength) {
 		this.tableLength = tableLength;
+	}
+	
+	
+	
+	public String getReadOnly() {
+		return readOnly;
+	}
+	public void setReadOnly(String readOnly) {
+		this.readOnly = readOnly;
 	}
 	
 	/*

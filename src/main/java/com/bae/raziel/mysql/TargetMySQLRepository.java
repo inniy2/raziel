@@ -60,5 +60,50 @@ public class TargetMySQLRepository {
 		
 		return MySQLDaoList;
 	}
+	
+	
+	public MySQLDao getReadOnly(MySQLDao mySQLDao){
+		
+		
+		Connection con = null;
+
+		MySQLDao result = new MySQLDao();
+		
+		try {
+			
+			
+			// Class.forName("com.mysql.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://"+mySQLDao.getHostName()+":"+mySQLDao.getPort()+"/information_schema",mySQLDao.getUser(),mySQLDao.getPassword());
+			
+			Statement stmt = con.createStatement();  
+			ResultSet rs = stmt.executeQuery("show variables like 'read_only'");  
+			
+			while(rs.next()){
+				result.setHostName(mySQLDao.getHostName());
+				result.setReadOnly(rs.getString("Value"));
+				
+				logger.debug("-------------------------------------------------------------------");
+				logger.debug("Host name: "+ mySQLDao.getHostName());
+				logger.debug("Read Only: "+ rs.getString("Value"));
+				logger.debug("-------------------------------------------------------------------");
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return result;
+	}
 
 }

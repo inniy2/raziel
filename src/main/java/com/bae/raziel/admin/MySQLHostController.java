@@ -19,11 +19,23 @@ public class MySQLHostController {
 	@Autowired
 	MySQLHostService mySQLHostService;
 	
+	
 	@PostMapping("/save")
 	public List<MySQLHostDto> save(@Valid @RequestBody List<MySQLHostDto> mySQLHostDtoList){
 		return mySQLHostService.save(mySQLHostDtoList);
 	}
 	
+	
+	@PostMapping("/updateReadOnly")
+	public List<MySQLHostDto> updateReadOnly(@Valid @RequestBody MySQLHostDto mySQLHostDto){
+		return mySQLHostService.updateReadOnly(mySQLHostDto);
+	}
+	
+	
+	@PostMapping("/updateGhostHost")
+	public List<MySQLHostDto> updateGhostHost(@Valid @RequestBody MySQLHostDto mySQLHostDto){
+		return mySQLHostService.updateGhostHost(mySQLHostDto);
+	}
 	
 	
 	

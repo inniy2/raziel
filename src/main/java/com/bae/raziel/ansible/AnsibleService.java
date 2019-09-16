@@ -36,15 +36,19 @@ public class AnsibleService {
 	MySQLHostRepository mySQLHostRepository;
 	
 	
+	
+	/*
+	 * Read target table info from production mysql
+	 */
 	@Autowired
 	TargetMySQLRepository targetMySQLRepository;
 	
 	
 	@Value("${console.mysql.user}")
-    private String consoleMySQLUser;
-	
+	private String consoleMySQLUser;
+
 	@Value("${console.mysql.password}")
-    private String consoleMySQLpassword;
+	private String consoleMySQLpassword;
 	
 	
 	
