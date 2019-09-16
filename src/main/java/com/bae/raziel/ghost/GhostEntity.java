@@ -2,130 +2,147 @@ package com.bae.raziel.ghost;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 
-public class GhostDto {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 
-	private long orderId;
-	
+
+
+@Entity
+@IdClass(GhostEntityId.class)
+@Table(name = "alter_history")
+public class GhostEntity {
+
+	@Id
+	@Column(name = "cluster_name", nullable = false)
 	private String clusterName;
+	
+	@Id
+	@Column(name = "table_schema", nullable = false)
 	private String tableSchema;
+	
+	@Id
+	@Column(name = "table_name", nullable = false)
 	private String tableName;
+	
+	
+	
+	@Column(name = "ghost_host_name", nullable = false)
 	private String ghostHostName;
 	
+	@Column(name = "check_replica_list", nullable = false)
 	private ArrayList<String> checkReplicaList;
+	
+	@Column(name = "alter_statement", nullable = false)
 	private ArrayList<String> alterStatement;
 	
-	private String dataDir;
-	private long availableSpace;
-	private float diskUsages;
+	@Column(name = "progress_status", nullable = false)
+	private int progressStatus;
 	
+	@Column(name = "register_email", nullable = false)
 	private String registerEmail;
 	
-	private List<String> outputStrList;
-	
+	@Column(name = "create_timestamp", nullable = true)
 	private Timestamp createTimestamp;
+	
+	@Column(name = "update_timestamp", nullable = true)
 	private Timestamp updateTimestamp;
-	private int progressStatus;
-	public long getOrderId() {
-		return orderId;
-	}
-	public void setOrderId(long orderId) {
-		this.orderId = orderId;
-	}
+
+	
+
 	public String getClusterName() {
 		return clusterName;
 	}
+
 	public void setClusterName(String clusterName) {
 		this.clusterName = clusterName;
 	}
+
 	public String getTableSchema() {
 		return tableSchema;
 	}
+
 	public void setTableSchema(String tableSchema) {
 		this.tableSchema = tableSchema;
 	}
+
 	public String getTableName() {
 		return tableName;
 	}
+
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
+
 	public String getGhostHostName() {
 		return ghostHostName;
 	}
+
 	public void setGhostHostName(String ghostHostName) {
 		this.ghostHostName = ghostHostName;
 	}
+
 	public ArrayList<String> getCheckReplicaList() {
 		return checkReplicaList;
 	}
+
 	public void setCheckReplicaList(ArrayList<String> checkReplicaList) {
 		this.checkReplicaList = checkReplicaList;
 	}
+
 	public ArrayList<String> getAlterStatement() {
 		return alterStatement;
 	}
+
 	public void setAlterStatement(ArrayList<String> alterStatement) {
 		this.alterStatement = alterStatement;
 	}
-	public String getDataDir() {
-		return dataDir;
-	}
-	public void setDataDir(String dataDir) {
-		this.dataDir = dataDir;
-	}
-	public long getAvailableSpace() {
-		return availableSpace;
-	}
-	public void setAvailableSpace(long availableSpace) {
-		this.availableSpace = availableSpace;
-	}
-	public float getDiskUsages() {
-		return diskUsages;
-	}
-	public void setDiskUsages(float diskUsages) {
-		this.diskUsages = diskUsages;
-	}
-	public String getRegisterEmail() {
-		return registerEmail;
-	}
-	public void setRegisterEmail(String registerEmail) {
-		this.registerEmail = registerEmail;
-	}
-	public List<String> getOutputStrList() {
-		return outputStrList;
-	}
-	public void setOutputStrList(List<String> outputStrList) {
-		this.outputStrList = outputStrList;
-	}
-	public Timestamp getCreateTimestamp() {
-		return createTimestamp;
-	}
-	public void setCreateTimestamp(Timestamp createTimestamp) {
-		this.createTimestamp = createTimestamp;
-	}
-	public Timestamp getUpdateTimestamp() {
-		return updateTimestamp;
-	}
-	public void setUpdateTimestamp(Timestamp updateTimestamp) {
-		this.updateTimestamp = updateTimestamp;
-	}
+
 	public int getProgressStatus() {
 		return progressStatus;
 	}
+
 	public void setProgressStatus(int progressStatus) {
 		this.progressStatus = progressStatus;
 	}
+
+	public String getRegisterEmail() {
+		return registerEmail;
+	}
+
+	public void setRegisterEmail(String registerEmail) {
+		this.registerEmail = registerEmail;
+	}
+
+	public Timestamp getCreateTimestamp() {
+		return createTimestamp;
+	}
+
+	public void setCreateTimestamp(Timestamp createTimestamp) {
+		this.createTimestamp = createTimestamp;
+	}
+
+	public Timestamp getUpdateTimestamp() {
+		return updateTimestamp;
+	}
+
+	public void setUpdateTimestamp(Timestamp updateTimestamp) {
+		this.updateTimestamp = updateTimestamp;
+	}
+
 	@Override
 	public String toString() {
-		return "GhostDto [orderId=" + orderId + ", clusterName=" + clusterName + ", tableSchema=" + tableSchema
-				+ ", tableName=" + tableName + ", ghostHostName=" + ghostHostName + ", checkReplicaList="
-				+ checkReplicaList + ", alterStatement=" + alterStatement + ", dataDir=" + dataDir + ", availableSpace="
-				+ availableSpace + ", diskUsages=" + diskUsages + ", registerEmail=" + registerEmail
-				+ ", outputStrList=" + outputStrList + ", createTimestamp=" + createTimestamp + ", updateTimestamp="
-				+ updateTimestamp + ", progressStatus=" + progressStatus + "]";
+		return "GhostEntity [clusterName=" + clusterName + ", tableSchema=" + tableSchema + ", tableName=" + tableName
+				+ ", ghostHostName=" + ghostHostName + ", checkReplicaList=" + checkReplicaList + ", alterStatement="
+				+ alterStatement + ", progressStatus=" + progressStatus + ", registerEmail=" + registerEmail
+				+ ", createTimestamp=" + createTimestamp + ", updateTimestamp=" + updateTimestamp + "]";
 	}
+
 	
 	
 }

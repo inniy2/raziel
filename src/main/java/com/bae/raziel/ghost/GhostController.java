@@ -1,5 +1,7 @@
 package com.bae.raziel.ghost;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ public class GhostController {
 	GhostService ghostService;
 	
 	
+	
 	@PostMapping("/dryrun")
 	public GhostDto dryRun(@Valid @RequestBody GhostDto ghostDto){
 		return ghostService.dryRun(ghostDto);
@@ -23,10 +26,21 @@ public class GhostController {
 	
 	
 	@PostMapping("/execute")
-	public GhostDto execute(@Valid @RequestBody GhostDto ghostDto){
+	public void execute(@Valid @RequestBody GhostDto ghostDto){
 		ghostService.execute(ghostDto);
-		
-		return ghostDto;
 	}
+	
+
+	@PostMapping("/findAll")
+	public List<GhostDto> findAll(@Valid @RequestBody GhostDto ghostDto){
+		return ghostService.findAll(ghostDto);
+	}
+	
+
+	@PostMapping("/findAllByProgress")
+	public List<GhostDto> findProgress(@Valid @RequestBody GhostDto ghostDto){
+		return ghostService.findAllByProgress(ghostDto);
+	}
+	
 	
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bae.raziel.admin.MySQLHostEntity;
@@ -22,6 +23,10 @@ import com.bae.raziel.mysql.TargetMySQLRepository;
 @Service
 public class AnsibleService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(AnsibleService.class);
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+	
+	
 	
 	@Autowired
 	AnsibleComponent ansibleComponent;
@@ -35,8 +40,13 @@ public class AnsibleService {
 	TargetMySQLRepository targetMySQLRepository;
 	
 	
-	private static final Logger logger = LoggerFactory.getLogger(AnsibleService.class);
-	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+	@Value("${console.mysql.user}")
+    private String consoleMySQLUser;
+	
+	@Value("${console.mysql.password}")
+    private String consoleMySQLpassword;
+	
+	
 	
 	
 	
@@ -63,8 +73,8 @@ public class AnsibleService {
 		 */
 		MySQLDao mySQLDao = new MySQLDao();
 		mySQLDao.setHostName(mySQLHostEntity.getMysqlHostName());
-		mySQLDao.setUser("bae");
-		mySQLDao.setPassword("bae");
+		mySQLDao.setUser(consoleMySQLUser);
+		mySQLDao.setPassword(consoleMySQLpassword);
 		mySQLDao.setPort(3306);
 		mySQLDao.setTableName(ghostDto.getTableName());
 	
