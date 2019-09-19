@@ -60,6 +60,34 @@ public class AnsibleService {
 		List<String> resultList = new ArrayList<String>();
 		
 		
+		List<MySQLHostEntity> mySQLHostEntityList = mySQLHostRepository.findAllMySQLHostByClusterName(ghostDto.getClusterName());
+		
+		/*
+		 * Find hosts has type is 3 ( ghost host )
+		 */
+		boolean isGhostHostSelected = mySQLHostEntityList.stream()
+				.anyMatch(e -> e.getHostType() == 3);
+		
+		String ghostHostName = null;
+		
+		if(isGhostHostSelected) {
+			ghostHostName = mySQLHostEntityList.stream()
+					.filter(e -> e.getHostType() == 3 )
+					.findFirst()
+					.map(q -> q.getMysqlHostName())
+					.get();
+		}else {
+			ghostHostName = mySQLHostEntityList.stream()
+					.filter(e -> e.getHostType() == 2 )
+					.findFirst()
+					.map(q -> q.getMysqlHostName())
+					.get();
+		}
+		
+		if(ghostDto.getGhostHostName() == null) ghostDto.setGhostHostName(ghostHostName);
+		
+		
+		
 		
 		/*
 		 * Read ghost host from admin

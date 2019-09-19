@@ -27,6 +27,18 @@ public class GhostDto {
 	private Timestamp createTimestamp;
 	private Timestamp updateTimestamp;
 	private int progressStatus;
+	
+	
+	/*
+	 * GHC
+	 */
+	private long id;
+	private Timestamp lastUpdate;
+	private String hint;
+	private String value;
+	
+	
+	
 	public long getOrderId() {
 		return orderId;
 	}
@@ -117,6 +129,36 @@ public class GhostDto {
 	public void setProgressStatus(int progressStatus) {
 		this.progressStatus = progressStatus;
 	}
+	
+	
+	
+	
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public Timestamp getLastUpdate() {
+		return lastUpdate;
+	}
+	public void setLastUpdate(Timestamp lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+	public String getHint() {
+		return hint;
+	}
+	public void setHint(String hint) {
+		this.hint = hint;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "GhostDto [orderId=" + orderId + ", clusterName=" + clusterName + ", tableSchema=" + tableSchema
@@ -124,8 +166,11 @@ public class GhostDto {
 				+ checkReplicaList + ", alterStatement=" + alterStatement + ", dataDir=" + dataDir + ", availableSpace="
 				+ availableSpace + ", diskUsages=" + diskUsages + ", registerEmail=" + registerEmail
 				+ ", outputStrList=" + outputStrList + ", createTimestamp=" + createTimestamp + ", updateTimestamp="
-				+ updateTimestamp + ", progressStatus=" + progressStatus + "]";
+				+ updateTimestamp + ", progressStatus=" + progressStatus + ", id=" + id + ", lastUpdate=" + lastUpdate
+				+ ", hint=" + hint + ", value=" + value + "]";
 	}
+	
+	
 	
 	
 }

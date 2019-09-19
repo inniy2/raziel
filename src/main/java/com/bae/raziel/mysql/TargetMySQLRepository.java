@@ -17,6 +17,64 @@ public class TargetMySQLRepository {
 	private static final Logger logger = LoggerFactory.getLogger(TargetMySQLRepository.class);
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
+	/*
+	 * GHC table can not be there 
+	 */
+	public MySQLDao getGhc(MySQLDao mySQLDao) throws Exception{
+		
+		
+		Connection con = null;
+
+		MySQLDao result = new MySQLDao();
+		
+		try {
+			
+			
+			// Class.forName("com.mysql.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://"+mySQLDao.getHostName()+":"+mySQLDao.getPort()+"/"+mySQLDao.getTableSchema(),mySQLDao.getUser(),mySQLDao.getPassword());
+			
+			Statement stmt = con.createStatement();  
+			ResultSet rs = stmt.executeQuery("select t.`id`, t.`last_update`, t.`hint`, t.`value` from `_bae_tbl1_ghc` t join ( select max(`id`) as `id` from `bae_database`.`_bae_tbl1_ghc`) r on r.`id` = t.`id`");  
+			
+			while(rs.next()){
+				
+				result.setHostName(mySQLDao.getHostName());
+				result.setTableSchema(mySQLDao.getTableSchema());
+				result.setTableName(mySQLDao.getTableName());
+				result.setId(rs.getLong("id"));
+				result.setLastUpdate(rs.getTimestamp("last_update"));
+				result.setHint(rs.getString("hint"));
+				result.setValue(rs.getString("value"));
+				
+				logger.debug("-------------------------------------------------------------------");
+				logger.debug("GHC Host name: "+ mySQLDao.getHostName());
+				logger.debug("GHC Table Schema: "+ mySQLDao.getTableSchema());
+				logger.debug("GHC Table Name: "+ mySQLDao.getTableName());
+				logger.debug("GHC id: "+ rs.getLong("id"));
+				logger.debug("GHC last update: "+ rs.getTimestamp("last_update"));
+				logger.debug("GHC hint: "+ rs.getString("hint"));
+				logger.debug("GHC value: "+ rs.getString("value"));
+				logger.debug("-------------------------------------------------------------------");
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			
+			try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return result;
+	}
+	
 	
 	public List<MySQLDao> getTableInfo(MySQLDao mySQLDao){
 		

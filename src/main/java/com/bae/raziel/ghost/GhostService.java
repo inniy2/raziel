@@ -2,6 +2,7 @@ package com.bae.raziel.ghost;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bae.raziel.admin.MySQLHostEntity;
 import com.bae.raziel.admin.MySQLHostRepository;
+import com.bae.raziel.mysql.MySQLDao;
 import com.bae.raziel.mysql.TargetMySQLRepository;
 
 @Service
@@ -31,7 +34,27 @@ public class GhostService {
 	@Autowired
 	GhostRepository ghostRepository;
 	
+	/*
+	 * To get ghost host name & check replica list
+	 */
+	@Autowired
+	MySQLHostRepository mySQLHostRepository;
 	
+	
+	/*
+	 * To get GHC info
+	 */
+	@Autowired
+	TargetMySQLRepository targetMySQLRepository;
+	
+	
+	@Value("${console.mysql.user}")
+	private String consoleMySQLUser;
+
+	@Value("${console.mysql.password}")
+	private String consoleMySQLpassword;
+	
+
 	
 	
 	String[] ghostRunComand = new String[] {
@@ -54,6 +77,66 @@ public class GhostService {
 			"--timestamp-old-table",                     // 16
 			""                                           // 17
 	};
+	
+	
+	
+	
+	public GhostDto findGHCByProgress(GhostDto ghostDto) {
+		
+		MySQLDao mySQLDao = this.mapToMySQLDao(ghostDto);
+		
+		
+		List<MySQLHostEntity> mySQLHostEntityList = mySQLHostRepository.findAllMySQLHostByClusterName(ghostDto.getClusterName());
+		
+		/*
+		 * Find hosts has type is 3 ( ghost host )
+		 */
+		boolean isGhostHostSelected = mySQLHostEntityList.stream()
+				.anyMatch(e -> e.getHostType() == 3);
+		
+		String ghostHostName = null;
+		
+		if(isGhostHostSelected) {
+			ghostHostName = mySQLHostEntityList.stream()
+					.filter(e -> e.getHostType() == 3 )
+					.findFirst()
+					.map(q -> q.getMysqlHostName())
+					.get();
+		}else {
+			ghostHostName = mySQLHostEntityList.stream()
+					.filter(e -> e.getHostType() == 2 )
+					.findFirst()
+					.map(q -> q.getMysqlHostName())
+					.get();
+		}
+		
+		if( mySQLDao.getHostName() == null ) mySQLDao.setHostName(ghostHostName);
+		
+		try {
+			
+			mySQLDao = targetMySQLRepository.getGhc(mySQLDao);
+			
+		}catch(NullPointerException ne) {
+			
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		GhostDto returnGhostDto = this.mapToGhostDto(mySQLDao);
+		
+		returnGhostDto.setClusterName(ghostDto.getClusterName());
+		returnGhostDto.setTableName(ghostDto.getTableName());
+		returnGhostDto.setAlterStatement(ghostDto.getAlterStatement());
+		returnGhostDto.setRegisterEmail(ghostDto.getRegisterEmail());
+		
+		if(ghostDto.getGhostHostName() != null )returnGhostDto.setGhostHostName(ghostDto.getGhostHostName());
+		if(ghostDto.getCheckReplicaList() != null )returnGhostDto.setCheckReplicaList(ghostDto.getCheckReplicaList());
+		
+		
+		return returnGhostDto;
+	}
 	
 	
 	
@@ -88,10 +171,78 @@ public class GhostService {
 	public GhostDto dryRun(GhostDto ghostDto){
 		
 		
+		List<MySQLHostEntity> mySQLHostEntityList = mySQLHostRepository.findAllMySQLHostByClusterName(ghostDto.getClusterName());
+		
 		/*
-		 * dryrun
+		 * Find hosts which type is 1 ( master )
 		 */
-		ghostDto.setOutputStrList(this.ghostRun(ghostDto, "--verbose"));
+		List<String> masterHostName = mySQLHostEntityList.stream()
+				.filter(e -> e.getHostType() == 1 )
+				.map(q -> q.getMysqlHostName())
+				.collect(Collectors.toList());
+		
+		logger.debug("----------------------------------- list stream master host debug -------------------------------");
+		masterHostName.forEach(e -> logger.debug(e.toString()));
+		logger.debug("----------------------------------- list stream master host debug -------------------------------");
+		
+		
+		/*
+		 * Find hosts has type is 3 ( ghost host )
+		 */
+		boolean isGhostHostSelected = mySQLHostEntityList.stream()
+				.anyMatch(e -> e.getHostType() == 3);
+		
+		String ghostHostName = null;
+		
+		if(isGhostHostSelected) {
+			ghostHostName = mySQLHostEntityList.stream()
+					.filter(e -> e.getHostType() == 3 )
+					.findFirst()
+					.map(q -> q.getMysqlHostName())
+					.get();
+		}else {
+			ghostHostName = mySQLHostEntityList.stream()
+					.filter(e -> e.getHostType() == 2 )
+					.findFirst()
+					.map(q -> q.getMysqlHostName())
+					.get();
+		}
+		
+		if(ghostDto.getGhostHostName() == null) ghostDto.setGhostHostName(ghostHostName);
+		
+		logger.debug("----------------------------------- list stream ghost host debug -------------------------------");
+		logger.debug(ghostHostName);
+		logger.debug("----------------------------------- list stream ghost host debug -------------------------------");
+		
+		
+		/*
+		 * Find hosts has type is 2 ( slaves )
+		 */
+		List<String> checkReplicaList = mySQLHostEntityList.stream()
+				.filter(e -> e.getHostType() == 2 )
+				.map(q -> q.getMysqlHostName())
+				.collect(Collectors.toList());
+		
+		if(ghostDto.getCheckReplicaList() == null) ghostDto.setCheckReplicaList((ArrayList<String>)checkReplicaList);
+		
+		logger.debug("----------------------------------- list stream slave debug -------------------------------");
+		checkReplicaList.forEach(e -> logger.debug(e.toString()));
+		logger.debug("----------------------------------- list stream slave debug -------------------------------");
+		
+		
+		
+		
+		if( masterHostName.size() == 1 ) {
+			/*
+			 * dryrun
+			 */
+			ghostDto.setOutputStrList(this.ghostRun(ghostDto, "--verbose"));
+			
+		}else {
+			List<String> messages = new ArrayList<String>();
+			messages.add("Dry run fail due to multi master");
+			ghostDto.setOutputStrList(messages);
+		}
 		
 		return ghostDto;
 		
@@ -101,7 +252,12 @@ public class GhostService {
 	
 	public void execute(GhostDto ghostDto){
 		
-	
+		/*
+		 * dryrun
+		 */
+		ghostDto = this.dryRun(ghostDto);
+		
+		
 		
 		GhostEntity ghostEntity = null;
 		
@@ -216,6 +372,41 @@ public class GhostService {
 		
 	}
 	
+	
+	private GhostDto mapToGhostDto(MySQLDao mySQLDao) {
+		GhostDto ghostDto = null;
+		
+		if( mySQLDao != null ) {
+			ghostDto = new GhostDto();
+			
+			ghostDto.setGhostHostName(mySQLDao.getHostName());
+			ghostDto.setTableSchema(mySQLDao.getTableSchema());
+			ghostDto.setTableName(mySQLDao.getTableName());
+			
+			ghostDto.setId(mySQLDao.getId());
+			ghostDto.setLastUpdate(mySQLDao.getLastUpdate());
+			ghostDto.setHint(mySQLDao.getHint());
+			ghostDto.setValue(mySQLDao.getValue());
+			
+		}
+		
+		
+		
+		return ghostDto;
+	}
+	
+	
+	private MySQLDao mapToMySQLDao(GhostDto ghostDto) {
+		MySQLDao mySQLDao = new MySQLDao();
+		
+		mySQLDao.setHostName(ghostDto.getGhostHostName());
+		mySQLDao.setUser(consoleMySQLUser);
+		mySQLDao.setPassword(consoleMySQLpassword);
+		mySQLDao.setPort(3306);
+		mySQLDao.setTableSchema(ghostDto.getTableSchema());
+		
+		return mySQLDao;
+	}
 	
 	
 	private GhostDto mapToGhostDto(GhostEntity ghostEntity, int orderId) {

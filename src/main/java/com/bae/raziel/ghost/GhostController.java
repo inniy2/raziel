@@ -38,9 +38,13 @@ public class GhostController {
 	
 
 	@PostMapping("/findAllByProgress")
-	public List<GhostDto> findProgress(@Valid @RequestBody GhostDto ghostDto){
+	public List<GhostDto> findAllByProgress(@Valid @RequestBody GhostDto ghostDto){
 		return ghostService.findAllByProgress(ghostDto);
 	}
 	
+	@PostMapping("/findGHCByProgress")
+	public GhostDto findGHCByProgress(@Valid @RequestBody GhostDto ghostDto){
+		return ghostService.findGHCByProgress(ghostDto);
+	}
 	
 }
