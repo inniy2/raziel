@@ -1,4 +1,6 @@
-package com.bae.raziel.getosinfo;
+package com.bae.raziel.ansible;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -8,19 +10,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/host")
-public class HostController {
-	
+import com.bae.raziel.ghost.GhostDto;
 
+
+@RestController
+@RequestMapping("/api/ansible")
+public class AnsibleController {
 	
 	@Autowired
-	private HostService hostSevice;
+	AnsibleService ansibleService;
 	
-	@PostMapping("/savehost")
-	public HostDTO createHost(@Valid @RequestBody HostDTO host) {
-		return hostSevice.save(host);
+	@PostMapping("/find")
+	public List<String> save(@Valid @RequestBody GhostDto ghostDto){
+		return ansibleService.find(ghostDto);
 	}
 
-	
 }
