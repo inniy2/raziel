@@ -21,6 +21,8 @@ public class MySQLHostController {
 	MySQLHostService mySQLHostService;
 	
 	
+	
+	
 	@PostMapping("/save")
 	public List<MySQLHostDto> save(@Valid @RequestBody List<MySQLHostDto> mySQLHostDtoList){
 		return mySQLHostService.save(mySQLHostDtoList);
@@ -37,6 +39,7 @@ public class MySQLHostController {
 	public List<MySQLHostDto> updateGhostHost(@Valid @RequestBody MySQLHostDto mySQLHostDto){
 		return mySQLHostService.updateGhostHost(mySQLHostDto);
 	}
+	
 	
 	
 	

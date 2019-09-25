@@ -25,6 +25,8 @@ public class MySQLHostService {
 	
 	
 	
+	
+	
 	/*
 	 * (Read target table info from production mysql)
 	 * Read target mysql variables: read-only
@@ -37,9 +39,9 @@ public class MySQLHostService {
 
 	@Value("${console.mysql.password}")
 	private String consoleMySQLpassword;
+		
 	
 	
-
 	
 	public List<MySQLHostDto> updateGhostHost(MySQLHostDto mySQLHostDto){
 		
